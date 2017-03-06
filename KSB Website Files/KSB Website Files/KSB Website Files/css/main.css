@@ -1,0 +1,106 @@
+#headerarea{
+    background-color: #990000;
+}
+
+#mainarea{
+    background-color:#990000;
+}
+
+.nav  {
+	margin:0px;
+}
+
+.footer{
+    background-color:#4A3C31;
+}
+
+.navbar-header {
+	margin:0px;
+}
+
+.navbar {
+	margin:0px;
+}
+
+.navbar-collapse-1 {
+	margin:0px;
+}
+
+.nav.container-fluid {
+	margin:0px;
+}
+
+.jumbotron {
+  background-image:url('images/volun.jpg');
+  height: 500px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0px;
+}
+
+.volontaire-description{
+	padding: 20px;
+	background-color: #f7f7f7;
+	border-bottom: 1px solid #dbdbdb;
+}
+
+.volontaire-items {
+	padding: 40px;
+    background-color: #efefef;
+	border-bottom: 1px solid #dbdbdb;
+}
+
+.links-generalinfo {
+	padding: 30px;
+	background-color: #f7f7f7;
+}
+
+.about_text {
+	text-align:justify;
+}
+
+.product_text {
+	text-align:justify;
+}
+
+#subnav {
+	padding-top: 5%;
+}
+
+#about_image {
+	padding: 2%;
+}
+
+#registration-page{
+	background-color: #f7f7f7;
+	width: 100%;
+}
+
+#registration-main{
+	background-color: white;
+	width: 70%;
+	float: auto;
+	border: 1px solid #dbdbdb;
+}
+
+
+#register-button{
+	padding: 2%
+}
+
+#user-registration-nav{
+	background-color: white;
+	border: 1px solid #dbdbdb;
+}
+
+#name-address{
+	width: 70%;
+}
+
+#state-zip{
+	padding: 2%;
+}
+
+#email-password{
+	width: 70%;
+}
