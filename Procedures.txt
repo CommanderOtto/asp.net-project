@@ -41,7 +41,7 @@ INSERT INTO KBS_ADVISOR_TIMES
 VALUES(@Available, @Time, @Advisor, @StillValid);
 
 //Sample Execution Statement
-EXEC KBS_INSERT_ADVISOR_TIME '04/04/2017','2:00',1,1;
+EXEC KBS_INSERT_ADVISOR_TIME '04/04/2017','2:00',2,1;
 
 
 
@@ -329,6 +329,112 @@ WHERE RID = @RID;
 //Sample Execution Statement
 EXEC KBS_UPDATE_REASON 1,'Course Planning';
 
+
+//Procedure for updating Student
+IF OBJECT_ID('KBS_UPDATE_STUDENT') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_UPDATE_STUDENT')
+GO
+CREATE PROCEDURE KBS_UPDATE_STUDENT @SID int, @StuFName nvarchar(50), @StuLName nvarchar(50), @StuEmail nvarchar(80), @StuUserName nvarchar(50), @StuPassword nvarchar(50), @StuPhone nvarchar(50), @MID int, @StuProspective int, @StuIUID nchar(10), @StuActive int
+AS
+UPDATE KBS_STUDENTS
+SET StuFName = @StuFName, StuLName = @StuLName, StuEmail = @StuEmail, StuUserName = @StuUserName, StuPassword = @StuPassword, StuPhone = @StuPhone, MID = @MID, StuProspective = @StuProspective, StuIUID = @StuIUID, StuActive = @StuActive
+WHERE SID = @SID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_STUDENT 2,'Dave','Jones','Djones@umail.iu.edu','djones','password','213-234-1945',1,0,'1234567891',1;
+
+
+
+//Procedure for updating Advisors
+IF OBJECT_ID('KBS_UPDATE_ADVISOR') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_UPDATE_ADVISOR')
+GO
+CREATE PROCEDURE KBS_UPDATE_ADVISOR @AID int, @AdvFName nvarchar(50), @AdvLName nvarchar(50), @AdvUserName nvarchar(25), @AdvPassword nvarchar(50), @AdvStatus int, @AdvActive int
+AS
+UPDATE KBS_ADVISORS
+SET AdvFName = @AdvFName, AdvLName = @AdvLName, AdvUserName = @AdvUserName, AdvPassword = @AdvPassword, AdvStatus = @AdvStatus, AdvActive = @AdvActive
+WHERE AID = @AID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_ADVISOR
+1,'June','Alben','jualben', 'password',0,1;
+
+
+//Procedure for updating Advisor Times
+IF OBJECT_ID('KBS_UPDATE_ADVISOR_TIME') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_UPDATE_ADVISOR_TIME')
+GO
+CREATE PROCEDURE KBS_UPDATE_ADVISOR_TIME @ATID int, @AvaDate date, @AvaTime time, @AID int, @Valid int
+AS
+UPDATE KBS_ADVISOR_TIMES
+SET AvaDate = @AvaDate, AvaTime = @AvaTime, AID = @AID, Valid = @Valid
+WHERE ATID = @ATID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_ADVISOR_TIME 1,'04/05/2017','4:00',2,0;
+
+
+//Procedure for updating Appointments
+IF OBJECT_ID('KBS_UPDATE_APPOINTMENTS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_UPDATE_APPOINTMENTS')
+GO
+CREATE PROCEDURE KBS_UPDATE_APPOINTMENTS @APID int, @ATID int, @SID int, @Status int, @Notes nvarchar(200)
+AS
+UPDATE KBS_APPOINTMENTS
+SET ATID = @ATID, SID = @SID, Status = @Status, Notes = @Notes
+WHERE APID = @APID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_APPOINTMENTS 1,1,3,1,'Updated Version';
+
+/////////////////////////////////////////////////////////////////////////////////
+                                Selection Procedures
+/////////////////////////////////////////////////////////////////////////////////
+
+//Procedure for Selecting count of students -- useful for login
+IF OBJECT_ID('KBS_COUNT_STUDENT') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_COUNT_STUDENT')
+GO
+CREATE PROCEDURE KBS_COUNT_STUDENT @UserName nvarchar(50), @Password nvarchar(50)
+AS
+SELECT COUNT(*)
+FROM KBS_STUDENTS
+WHERE StuUserName = @UserName AND StuPassword = @Password;
+
+
+//Sample Execution Statement
+EXEC KBS_COUNT_STUDENT 'maniodel','password';
+
+
+
+//Procedure for Selecting count of Advisors -- useful for login
+IF OBJECT_ID('KBS_COUNT_ADVISOR') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_COUNT_ADVISOR')
+GO
+CREATE PROCEDURE KBS_COUNT_ADVISOR @UserName nvarchar(25), @Password nvarchar(50)
+AS
+SELECT COUNT(*)
+FROM KBS_ADVISORS
+WHERE AdvUserName = @UserName AND AdvPassword = @Password;
+
+//Sample Execution Statement
+EXEC KBS_COUNT_ADVISOR 'maniodel','password';
+
+
+
+//Select Appointment ID from student email
+IF OBJECT_ID('KBS_GET_APID') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_GET_APID')
+GO
+CREATE PROCEDURE KBS_GET_APID @email nvarchar(80)
+AS
+SELECT APID
+FROM KBS_APPOINTMENTS AS a INNER JOIN KBS_STUDENTS AS s 
+ON a.SID = s.SID
+WHERE s.StuEmail = @email;
+
+//Sample Execution Statement
+EXEC KBS_GET_APID 'maniodel@umail.iu.edu'
 
 
 
