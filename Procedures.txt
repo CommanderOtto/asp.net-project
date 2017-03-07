@@ -1,0 +1,334 @@
+/////////////////////////////////////////////////////////////////////////////////
+                              Insert   Procedures
+/////////////////////////////////////////////////////////////////////////////////
+
+
+//Procedure for inserting Students
+IF OBJECT_ID('KBS_INSERT_STUDENT') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_INSERT_STUDENT')
+GO
+CREATE PROCEDURE KBS_INSERT_STUDENT @First nvarchar(50), @Last nvarchar(50), @Email nvarchar(80), @UserName nvarchar(50), @Password nvarchar(50), @Phone nvarchar(50), @SMID int, @Prospective int, @SUID nchar(10)
+AS
+INSERT INTO KBS_STUDENTS
+VALUES(@First, @Last, @Email, @UserName, @Password,@Phone, @SMID, @Prospective, @SUID, 1);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_STUDENT 'John','Doe','JDOES@mail.com','Jdoesen','Enger','333-333-3333',1,0,'1234567890';
+
+
+
+//Procedure for inserting Advisors
+IF OBJECT_ID('KBS_INSERT_ADVISOR') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_INSERT_ADVISOR')
+GO
+CREATE PROCEDURE KBS_INSERT_ADVISOR @First nvarchar(50), @Last nvarchar(50),  @UserName nvarchar(25), @Password nvarchar(50), @Status int
+AS
+INSERT INTO KBS_ADVISORS
+VALUES(@First, @Last, @UserName, @Password, @Status, 1);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_ADVISOR 'Moran','Tolken', 'motolk', 'happyTIME', 0;
+
+
+
+//Procedure for inserting Advisor times
+IF OBJECT_ID('KBS_INSERT_ADVISOR_TIME') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_INSERT_ADVISOR_TIME')
+GO
+CREATE PROCEDURE KBS_INSERT_ADVISOR_TIME @Available date, @Time time(7), @Advisor int, @StillValid int
+AS
+INSERT INTO KBS_ADVISOR_TIMES
+VALUES(@Available, @Time, @Advisor, @StillValid);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_ADVISOR_TIME '04/04/2017','2:00',1,1;
+
+
+
+//Procedure for inserting Appointment Status 
+IF OBJECT_ID('KBS_INSERT_APPOINTMENT_STATUS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_INSERT_APPOINTMENT_STATUS')
+GO
+CREATE PROCEDURE KBS_INSERT_APPOINTMENT_STATUS @Status nvarchar(20)
+AS
+INSERT INTO KBS_APPOINTMENT_STATUS
+VALUES(@Status,1);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_APPOINTMENT_STATUS 'Canceled';
+
+
+
+//Procedure for inserting Advisor status
+IF OBJECT_ID('KBS_INSERT_ADVISOR_STATUS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_INSERT_ADVISOR_STATUS')
+GO
+CREATE PROCEDURE KBS_INSERT_ADVISOR_STATUS @Status nvarchar(20)
+AS
+INSERT INTO KBS_ADVISOR_STATUS
+VALUES(@Status, 1);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_ADVISOR_STATUS 'SuperAdmin';
+
+
+
+//Procedure for inserting Major Status 
+IF OBJECT_ID('KBS_INSERT_MAJOR') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_INSERT_MAJOR')
+GO
+CREATE PROCEDURE KBS_INSERT_MAJOR @Major nvarchar(50)
+AS
+INSERT INTO KBS_MAJORS
+VALUES(@Major,1);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_MAJOR 'Economics';
+
+
+//Procedure for inserting Reasons
+IF OBJECT_ID('KBS_INSERT_REASON') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_INSERT_REASON')
+GO
+CREATE PROCEDURE KBS_INSERT_REASON @Reason nvarchar(150)
+AS
+INSERT INTO KBS_REASONS
+VALUES(@Reason,1);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_REASON 'Course Recomendation';
+
+
+
+//Procedure for inserting Reason Lookup
+IF OBJECT_ID('KBS_INSERT_REASON_LOOKUP') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_INSERT_REASON_LOOKUP')
+GO
+CREATE PROCEDURE KBS_INSERT_REASON_LOOKUP @Reason int, @Appointment int
+AS
+INSERT INTO KBS_REASON_LOOKUP
+VALUES(@Reason, @Appointment);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_REASON_LOOKUP '1','2';
+
+
+
+//Procedure for inserting Appointments
+IF OBJECT_ID('KBS_INSERT_APPOINTMENT') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_INSERT_APPOINTMENT')
+GO
+CREATE PROCEDURE KBS_INSERT_APPOINTMENT @AdvisorTime int, @Student int, @Status int, @Note nvarchar(200)
+AS
+INSERT INTO KBS_APPOINTMENTS
+VALUES(@AdvisorTime, @Student, @Status, @Note);
+
+//Sample Execution Statement
+EXEC KBS_INSERT_APPOINTMENT 1,2,0,'Tester';
+
+
+/////////////////////////////////////////////////////////////////////////////////
+                               Delete  Procedures 
+/////////////////////////////////////////////////////////////////////////////////
+
+
+//Procedure for Deleting Students -- can't actually delete students due to the 
+//need to report, just change active value  0 == false, 1 == true
+
+IF OBJECT_ID('KBS_DELETE_STUDENT') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_DELETE_STUDENT')
+GO
+CREATE PROCEDURE KBS_DELETE_STUDENT @SID int
+AS
+UPDATE KBS_STUDENTS
+SET StuActive = 0
+WHERE SID = @SID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_STUDENT 1;
+
+
+
+//Procedure for deleting Advisors -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_ADVISOR') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_DELETE_ADVISOR')
+GO
+CREATE PROCEDURE KBS_DELETE_ADVISOR @AID int
+AS
+UPDATE KBS_ADVISORS
+SET AdvActive = 0
+WHERE AID = @AID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_ADVISOR 1;
+
+
+
+//Procedure for deleting Advisor times -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_ADVISOR_TIMES') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_DELETE_ADVISOR_TIMES')
+GO
+CREATE PROCEDURE KBS_DELETE_ADVISOR_TIMES @ATID int
+AS
+UPDATE KBS_ADVISOR_TIMES
+SET Valid = 0
+WHERE ATID = @ATID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_ADVISOR_TIMES 1;
+
+
+
+//Procedure for deleting Appointment Status -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_APPOINTMENT_STATUS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_DELETE_APPOINTMENT_STATUS')
+GO
+CREATE PROCEDURE KBS_DELETE_APPOINTMENT_STATUS @STID int
+AS
+UPDATE KBS_APPOINTMENT_STATUS
+SET StaActive = 0
+WHERE STID = @STID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_APPOINTMENT_STATUS 0;
+
+
+
+//Procedure for deleting Advisor Status -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_ADVISOR_STATUS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_DELETE_ADVISOR_STATUS')
+GO
+CREATE PROCEDURE KBS_DELETE_ADVISOR_STATUS @ASID int
+AS
+UPDATE KBS_ADVISOR_STATUS
+SET AStaActive = 0
+WHERE ASID = @ASID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_ADVISOR_STATUS 0;
+
+
+
+//Procedure for deleting Major -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_MAJOR') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_DELETE_MAJOR')
+GO
+CREATE PROCEDURE KBS_DELETE_MAJOR @MID int
+AS
+UPDATE KBS_MAJORS
+SET MajActive = 0
+WHERE MID = @MID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_MAJOR 1;
+
+
+//Procedure for deleting Reasons -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_REASON') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_DELETE_REASON')
+GO
+CREATE PROCEDURE KBS_DELETE_REASON @RID int
+AS
+UPDATE KBS_REASONS
+SET ReaActive = 0
+WHERE RID = @RID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_REASON 1;
+
+
+
+//Procedure for deleting Reason Lookup -- this one is the only one that actually deletes data, because of the fact that if this is deleted 
+//it is essentially removing a reason from an Appointment, and thus doesn't have backlash for keeping previous records. 
+IF OBJECT_ID('KBS_DELETE_REASON_LOOKUP') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_DELETE_REASON_LOOKUP')
+GO
+CREATE PROCEDURE KBS_DELETE_REASON_LOOKUP @RID int, @APID int
+AS
+DELETE FROM KBS_REASON_LOOKUP 
+WHERE RID = @RID AND APID = @APID
+
+//Sample Execution Statement
+EXEC KBS_DELETE_REASON_LOOKUP 1,2;
+
+
+
+//Procedure for deleting Appointments -- can't actually delete this due to reporting
+IF OBJECT_ID('KBS_DELETE_APPOINTMENT') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_DELETE_APPOINTMENT')
+GO
+CREATE PROCEDURE KBS_DELETE_APPOINTMENT @APID int
+AS
+UPDATE KBS_APPOINTMENTS
+SET Status = 0
+WHERE APID = @APID;
+
+//Sample Execution Statement
+EXEC KBS_DELETE_APPOINTMENT 1;
+
+
+///////////////////////////////////////////////////////////////////////////////
+                             Update   Statements
+///////////////////////////////////////////////////////////////////////////////
+
+
+//Procedure for updating Appointment Status 
+IF OBJECT_ID('KBS_UPDATE_APPOINTMENT_STATUS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_UPDATE_APPOINTMENT_STATUS')
+GO
+CREATE PROCEDURE KBS_UPDATE_APPOINTMENT_STATUS @STID int, @StaDesc nvarchar(20)
+AS
+UPDATE KBS_APPOINTMENT_STATUS
+SET StaDesc = @StaDesc
+WHERE STID = @STID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_APPOINTMENT_STATUS 0,'Canceled';
+
+
+
+//Procedure for updating Advisor status
+IF OBJECT_ID('KBS_UPDATE_ADVISOR_STATUS') IS NOT NULL
+   EXEC('DROP PROCEDURE KBS_UPDATE_ADVISOR_STATUS')
+GO
+CREATE PROCEDURE KBS_UPDATE_ADVISOR_STATUS @ASID int, @Status nvarchar(20)
+AS
+UPDATE KBS_ADVISOR_STATUS
+SET AStaDesc = @Status 
+WHERE ASID = @ASID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_ADVISOR_STATUS 0,'Super Admin';
+
+
+
+//Procedure for updating Major Status 
+IF OBJECT_ID('KBS_UPDATE_MAJOR') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_UPDATE_MAJOR')
+GO
+CREATE PROCEDURE KBS_UPDATE_MAJOR @MID int, @Major nvarchar(50)
+AS
+UPDATE KBS_MAJORS
+SET MajName = @Major
+WHERE MID = @MID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_MAJOR 1,'Economics';
+
+
+//Procedure for updating Reasons
+IF OBJECT_ID('KBS_UPDATE_REASON') IS NOT NULL
+  EXEC('DROP PROCEDURE KBS_UPDATE_REASON')
+GO
+CREATE PROCEDURE KBS_UPDATE_REASON @RID int, @Reason nvarchar(150)
+AS
+UPDATE KBS_REASONS
+SET ReaDesc = @Reason
+WHERE RID = @RID;
+
+//Sample Execution Statement
+EXEC KBS_UPDATE_REASON 1,'Course Planning';
+
+
+
+
