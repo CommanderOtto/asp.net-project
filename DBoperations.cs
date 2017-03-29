@@ -162,7 +162,7 @@ public class DBoperations
     }//end of Appointment Status
 
 
-    public Boolean CreateAdvisorTimes(DateTime available, DateTime time, int advisor, int valid)
+    public Boolean CreateAdvisorTimes(string available, string time, int advisor)
     {
 
         try
@@ -170,20 +170,17 @@ public class DBoperations
             con.Open();
 
 
-            SqlCommand cmd = new SqlCommand("KBS_INSERT_ADVISOR_TIMES", con);
+            SqlCommand cmd = new SqlCommand("KBS_INSERT_ADVISOR_TIME", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.Add(new SqlParameter("@Available", SqlDbType.Date));
             cmd.Parameters["@Available"].Value = available;
 
-            cmd.Parameters.Add(new SqlParameter("@Time", SqlDbType.Time));
+            cmd.Parameters.Add(new SqlParameter("@Time", SqlDbType.Time,7));
             cmd.Parameters["@Time"].Value = time;
 
             cmd.Parameters.Add(new SqlParameter("@Advisor", SqlDbType.Int));
             cmd.Parameters["@Advisor"].Value = advisor;
-
-            cmd.Parameters.Add(new SqlParameter("@StillValid", SqlDbType.Int));
-            cmd.Parameters["@StillValid"].Value = valid;
 
             cmd.ExecuteNonQuery();
             return true;
@@ -217,11 +214,9 @@ public class DBoperations
 
             cmd.Parameters.Add(new SqlParameter("@AdvisorTime", SqlDbType.Int));
             cmd.Parameters["@AdvisorTime"].Value = AdvisorTime;
+
             cmd.Parameters.Add(new SqlParameter("@Student", SqlDbType.Int));
             cmd.Parameters["@Student"].Value = StudentID;
-
-            cmd.Parameters.Add(new SqlParameter("@Status", SqlDbType.Int));
-            cmd.Parameters["@Status"].Value = 3;
 
             cmd.Parameters.Add(new SqlParameter("@Note", SqlDbType.NVarChar, 200));
             cmd.Parameters["@Note"].Value = notes;
@@ -305,7 +300,7 @@ public class DBoperations
     }//end of Create Reason
 
     //function used to create student accounts.
-    public Boolean CreateStudent(string FirstName, string LastName, string Email, string UserName, string Password, int Major, int Guest, string ID, string Phone)
+    public Boolean CreateStudent(string FirstName, string LastName, string Email, string UserName, int Major, int Guest, string ID, string Phone)
     {
         try
         {
@@ -326,9 +321,6 @@ public class DBoperations
 
             cmd.Parameters.Add(new SqlParameter("@UserName", SqlDbType.NVarChar, 50));
             cmd.Parameters["@UserName"].Value = UserName;
-
-            cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar, 50));
-            cmd.Parameters["@Password"].Value = Password;
 
             cmd.Parameters.Add(new SqlParameter("@Phone", SqlDbType.NVarChar, 50));
             cmd.Parameters["@Phone"].Value = Phone;
@@ -407,7 +399,7 @@ public class DBoperations
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     //function used to verify user credentials for login operation. -- uses unique username and password
-    public Boolean SecureVerifyStudent(string UserName, string Password)
+    public Boolean SecureVerifyStudent(string UserName)
     {
 
         try
@@ -419,9 +411,6 @@ public class DBoperations
 
             cmd.Parameters.Add(new SqlParameter("@UserName", SqlDbType.NVarChar, 50));
             cmd.Parameters["@UserName"].Value = UserName;
-
-            cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar, 50));
-            cmd.Parameters["@Password"].Value = Password;
 
             cmd.Parameters.Add(new SqlParameter("@count", SqlDbType.Int));
             cmd.Parameters["@count"].Direction = ParameterDirection.Output;
@@ -487,7 +476,7 @@ public class DBoperations
     }
 
     //function used to verify user credentials for login operation. -- uses unique username and password
-    public Boolean SecureVerifyAdvisor(string UserName, string Password)
+    public Boolean SecureVerifyAdvisor(string UserName)
     {
 
         try
@@ -497,11 +486,8 @@ public class DBoperations
             SqlCommand cmd = new SqlCommand("KBS_COUNT_ADVISOR", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.Add(new SqlParameter("@UserName", SqlDbType.NVarChar, 50));
+            cmd.Parameters.Add(new SqlParameter("@UserName", SqlDbType.NVarChar, 25));
             cmd.Parameters["@UserName"].Value = UserName;
-
-            cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar, 50));
-            cmd.Parameters["@Password"].Value = Password;
 
             cmd.Parameters.Add(new SqlParameter("@count", SqlDbType.Int));
             cmd.Parameters["@count"].Direction = ParameterDirection.Output;
@@ -511,9 +497,15 @@ public class DBoperations
             int count = (int)cmd.Parameters["@count"].Value;
             con.Close();
 
-            if (count == 1) //specify the exact expected number, instead of count > 0
+            if (count == 1)
+            {
+                //specify the exact expected number, instead of count > 0
                 return true;
-            else return false;
+            }
+            else
+            {
+                return false;
+            }
         }
         catch (Exception err)
         {
@@ -881,9 +873,45 @@ public class DBoperations
 
     }//end of Update Advisors
 
+    public Boolean UpdateAdvisor(int aid, string advfname, string advlname)
+    {
+
+        try
+        {
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("KBS_UPDATE_ADVISORS", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add(new SqlParameter("@AID", SqlDbType.Int));
+            cmd.Parameters["@AID"].Value = aid;
+
+            cmd.Parameters.Add(new SqlParameter("@AdvFName", SqlDbType.Int));
+            cmd.Parameters["@AdvFName"].Value = advfname;
+
+            cmd.Parameters.Add(new SqlParameter("@AdvLName", SqlDbType.Int));
+            cmd.Parameters["@AdvLName"].Value = advlname;
+
+           
+            cmd.ExecuteNonQuery();
+            return true;
+
+        }
+        catch (Exception err)
+        {
+            err.ToString();
+            return false;
+        }
+        finally
+        {
+            con.Close();
+
+        }
+
+    }//end of Update Advisors
 
     //updating Students
-    public Boolean UpdateStudents(int sid, string stufname, string stulname, string email, string username, string password, string phone, int mid, int prospect, string iuid, string valid)
+    public Boolean UpdateStudents(int sid, string stufname, string stulname, string email, string phone)
     {
 
         try
@@ -905,26 +933,8 @@ public class DBoperations
             cmd.Parameters.Add(new SqlParameter("@StuEmail", SqlDbType.NVarChar, 80));
             cmd.Parameters["@StuEmail"].Value = email;
 
-            cmd.Parameters.Add(new SqlParameter("@StuUserName", SqlDbType.NVarChar, 50));
-            cmd.Parameters["@StuUserName"].Value = username;
-
-            cmd.Parameters.Add(new SqlParameter("@StuPassword", SqlDbType.NVarChar, 50));
-            cmd.Parameters["@AdvPassword"].Value = password;
-
             cmd.Parameters.Add(new SqlParameter("@StuPhone", SqlDbType.NVarChar, 50));
             cmd.Parameters["@StuPhone"].Value = phone;
-
-            cmd.Parameters.Add(new SqlParameter("@MID", SqlDbType.Int));
-            cmd.Parameters["@MID"].Value = mid;
-
-            cmd.Parameters.Add(new SqlParameter("@StuProspective", SqlDbType.Int));
-            cmd.Parameters["@StuProspective"].Value = prospect;
-
-            cmd.Parameters.Add(new SqlParameter("@StuIUID", SqlDbType.NChar, 10));
-            cmd.Parameters["@StuIUID"].Value = iuid;
-
-            cmd.Parameters.Add(new SqlParameter("@StuActive", SqlDbType.Int));
-            cmd.Parameters["@StuActive"].Value = valid;
 
             cmd.ExecuteNonQuery();
             return true;
@@ -943,7 +953,39 @@ public class DBoperations
 
     }//end of Update Students
 
+    //////////////////////////////////////////////////////////////////////////////////
+    //                         DELETE METHODS
+    //////////////////////////////////////////////////////////////////////////////////
 
+    public Boolean DeleteAppointments(int apid)
+    {
+
+        try
+        {
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("KBS_DELETE_APPOINTMENT", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add(new SqlParameter("@APID", SqlDbType.Int));
+            cmd.Parameters["@APID"].Value = apid;
+
+            cmd.ExecuteNonQuery();
+            return true;
+
+        }
+        catch (Exception err)
+        {
+            err.ToString();
+            return false;
+        }
+        finally
+        {
+            con.Close();
+
+        }
+
+    }//end of Delete Appointments
 
 }
 

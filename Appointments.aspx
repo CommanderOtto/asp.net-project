@@ -36,7 +36,13 @@
     });
   } );
   
-  </script>
+  </script> 
+    <style>
+         .hidden-field
+ {
+     display:none;
+ }
+    </style>
 </head>
 <body>
  
@@ -125,9 +131,25 @@
 
                      <h3>Appointment Search Result</h3>
                      <asp:Panel runat="server" id="searching">
-                         <asp:Label runat="server" ID="hold"></asp:Label>
-                         <asp:DataGrid ID="result" runat="server"></asp:DataGrid>
+                         <asp:GridView ID="result" runat="server" style="width:100%;margin-bottom:5px;" BackColor="#ffffff" HorizontalAlign="center" CellPadding="15" CellSpacing="15" GridLines ="none" AllowPaging ="true"  OnPageIndexChanging="Paging" OnRowDeleting="DeleteAppointment" AutoGenerateColumns ="false" PageSize="3"  >
+         <PagerStyle CssClass="gridViewPager" HorizontalAlign="center"></PagerStyle>
+         <Columns>
+         <asp:BoundField DataField="APID"><ItemStyle CssClass="hidden-field" /><HeaderStyle CssClass="hidden-field" /></asp:BoundField>
+         <asp:BoundField DataField="StuFName" HeaderText="First" />
+         <asp:BoundField DataField="StuLName" HeaderText="Last" />
+         <asp:BoundField DataField="StuEmail" HeaderText="Email" />
+         <asp:BoundField DataField="StuPhone" HeaderText="Phone" />
+         <asp:BoundField DataField="AvaDate"  HeaderText="Date" />
+         <asp:BoundField DataField="AvaTime"  HeaderText="Time" />
+         <asp:BoundField DataField="AdvFName" HeaderText="Advisor First" />
+         <asp:BoundField DataField="AdvLName" HeaderText="Advisor Last" />
+         <asp:CommandField ShowDeleteButton="True" ButtonType="Button"  ControlStyle-CssClass="btn btn-default btn-sm"><ItemStyle Width="50" /></asp:CommandField>
+
+        </Columns>
+</asp:GridView>
+                         <br /><br />
                      </asp:Panel>
+                    <asp:Label runat="server" ID="hold"></asp:Label>
                     <asp:Button runat="server" class="btn btn-default"  text="Return" OnClick="GoBack"/>
                    
                 </div>

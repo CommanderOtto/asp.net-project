@@ -31,9 +31,45 @@ public partial class Appointments : System.Web.UI.Page
             SingleDate.Visible = true;
             RangeDate.Visible = false;
         }
+        if (!IsPostBack)
+        {
+            LoadAllData();
+        }
+        
+    }
 
-        
-        
+    protected void LoadAllData()
+    {
+        string cs = WebConfigurationManager.ConnectionStrings["localConnection"].ConnectionString;
+        SqlConnection con = new SqlConnection(cs);
+        string search = keyword_search.Text;
+        string holder = "Select * From VW_KBS_APPOINTMENTS";
+        SqlCommand cmd = new SqlCommand(holder, con);
+
+
+        try
+        {
+            con.Open();
+            System.Data.DataTable results = new DataTable();
+            SqlDataAdapter SqlData = new SqlDataAdapter(cmd);
+
+            SqlData.Fill(results);
+            result.DataSource = results;
+            result.DataBind();
+            con.Close();
+            SqlData.Dispose();
+        }
+        catch (SqlException err)
+        {
+            err.ToString();
+
+
+        }
+        finally
+        {
+            con.Close();
+        }
+
     }
 
     protected void Show_MultiDate(object sender, EventArgs e)
@@ -87,6 +123,13 @@ public partial class Appointments : System.Web.UI.Page
         {
             con.Close();
         }
+        
+    }
+
+    protected void Paging(object sender, GridViewPageEventArgs e)
+    {
+        result.PageIndex = e.NewPageIndex;
+        result.DataBind();
     }
 
     protected void GetAppointDate(object sender, EventArgs e)
@@ -153,6 +196,40 @@ public partial class Appointments : System.Web.UI.Page
             {
                 con.Close();
             }
+        }
+    }
+
+
+    protected void DeleteAppointment(object sender, GridViewDeleteEventArgs e)
+    {
+        GridViewRow row = (GridViewRow)result.Rows[e.RowIndex];
+        string firstname = row.Cells[1].Text;
+        string lastname = row.Cells[2].Text;
+        string email = row.Cells[3].Text;
+        string phone = row.Cells[4].Text;
+        string date = row.Cells[5].Text;
+        string time = row.Cells[6].Text;
+        string adfirst = row.Cells[7].Text;
+        string adlast = row.Cells[8].Text;
+        string apid = row.Cells[0].Text;
+        int id = int.Parse(apid);
+        Boolean istrue = DeleteRow(id);
+        LoadAllData();
+
+    }
+
+
+    protected Boolean DeleteRow(int apid)
+    {
+        DBoperations db = new DBoperations();
+        Boolean truth = db.DeleteAppointments(apid);
+        if (truth)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
